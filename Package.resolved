@@ -47,6 +47,15 @@
         }
       },
       {
+        "package": "PythonKit",
+        "repositoryURL": "https://github.com/pvieito/PythonKit.git",
+        "state": {
+          "branch": "master",
+          "revision": "8de2a3f1f8c1388e9fca84f192f96821d9ccd43d",
+          "version": null
+        }
+      },
+      {
         "package": "ShellOut",
         "repositoryURL": "https://github.com/johnsundell/shellout.git",
         "state": {
@@ -62,6 +71,24 @@
           "branch": null,
           "revision": "801c2878e4c6c5baf32fe132e1f3f3af6f9fd1b0",
           "version": "0.4.0"
+        }
+      },
+      {
+        "package": "SwiftPygments",
+        "repositoryURL": "https://github.com/Ze0nC/SwiftPygments",
+        "state": {
+          "branch": "master",
+          "revision": "c22bcfcc5931db56c971c1d2722de856a8bfaf39",
+          "version": null
+        }
+      },
+      {
+        "package": "SwiftPygmentsPublishPlugin",
+        "repositoryURL": "https://github.com/Ze0nC/SwiftPygmentsPublishPlugin",
+        "state": {
+          "branch": "master",
+          "revision": "9280f5d55a4a7600cef2e08078ec456ab345904c",
+          "version": null
         }
       }
     ]

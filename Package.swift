@@ -11,12 +11,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.7.0")
+        .package(name: "Publish", url: "https://github.com/johnsundell/publish.git", from: "0.7.0"),
+        .package(url: "https://github.com/Ze0nC/SwiftPygmentsPublishPlugin", .branch("master"))
     ],
     targets: [
         .target(
             name: "MorganzellersGithubIo",
-            dependencies: ["Publish"]
+            dependencies: ["Publish", "SwiftPygmentsPublishPlugin"]
         )
     ]
 )
