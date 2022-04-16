@@ -22,4 +22,7 @@ struct MorganzellersGithubIo: Website {
 }
 
 // This will generate your website using the built-in Foundation theme:
-try MorganzellersGithubIo().publish(withTheme: .foundation)
+try MorganzellersGithubIo().publish(
+    withTheme: .foundation,
+    deployedUsing: .gitHub(repository: String, branch: String, useSSH: Bool)
+    )
