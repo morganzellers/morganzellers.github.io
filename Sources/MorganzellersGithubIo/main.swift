@@ -15,8 +15,8 @@ struct MorganzellersGithubIo: Website {
 
     // Update these properties to configure your website:
     var url = URL(string: "https://your-website-url.com")!
-    var name = "MorganzellersGithubIo"
-    var description = "A description of MorganzellersGithubIo"
+    var name = "Morgan's Portfolio"
+    var description = "A description"
     var language: Language { .english }
     var imagePath: Path? { nil }
 }
@@ -24,5 +24,5 @@ struct MorganzellersGithubIo: Website {
 // This will generate your website using the built-in Foundation theme:
 try MorganzellersGithubIo().publish(
     withTheme: .foundation,
-    deployedUsing: .gitHub(repository: String, branch: String, useSSH: Bool)
+    deployedUsing: .gitHub("morganzellers/morganzellers.github.io", branch: "master")
     )
