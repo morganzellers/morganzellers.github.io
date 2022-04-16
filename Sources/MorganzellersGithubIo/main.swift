@@ -24,5 +24,5 @@ struct MorganzellersGithubIo: Website {
 // This will generate your website using the built-in Foundation theme:
 try MorganzellersGithubIo().publish(
     withTheme: .foundation,
-    deployedUsing: .gitHub("morganzellers/morganzellers.github.io", branch: "master")
+    deployedUsing: .gitHub("morganzellers/morganzellers.github.io", branch: "refs/remotes/origin/gh-pages")
     )
