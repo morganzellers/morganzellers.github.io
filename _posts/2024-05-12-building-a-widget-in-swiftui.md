@@ -18,25 +18,72 @@ Choose a name that fits your widget. I’m naming this one VotesWidget.
 
 You’ll get two files - VotesWidgetBundle and VotesWidget. The first is pretty simple…
 
-![Widget Preview](Assets/IMG_1712.png)
+
+```swift
+import WidgetKit
+import SwiftUI
+
+@main
+struct VotesWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        VoteWidget()
+    }
+}
+```
 
 However, the VotesWidget file has quite a lot of boilerplate in it. Let’s break it down by struct.
 
-![Widget Preview](Assets/SimpleEntry.png)
+```swift
+struct SimpleEntry: TimelineEntry {
+    let date: Date
+}
+```
 
 
 We’ll start with the SimpleEntry struct. This type is going to be the main data type for your widget. It will hold a date and whatever other data you need to show on your widget. For more information, checkout Apple’s documentation on TimelineEntry.
 
 I’m going to update mine with my Vote data type that holds information on congressional votes.
 
-![Widget Preview](Assets/VoteEntry.png)
+
+
+```swift
+struct VoteEntry: TimelineEntry {
+    let date: Date
+    let vote: Vote
+}
+```
 
 
 #### Timeline Provider
 
 Next, let’s take a look a look at the Provider struct; there’s a lot there.
 
-![Widget Preview](Assets/Provider.png)
+```swift
+struct Provider: TimelineProvider {
+    func placeholder (in context: Context) -> SimpleEntry {
+        SimpleEntry(date: Date())
+    }
+    func getSnapshot (in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = SimpleEntry (date: Date())
+        completion (entrv)
+    }
+
+    func getTimeline (in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        var entries: [SimpleEntry] = []
+
+        // Generate a timeline consisting of five entries an hour apart, starting from the current date
+        let currentDate = Date()
+        for hourOffset in 0 ..< 5 {
+            let entrvDate = Calendar.current.date (bvAdding: .hour, value: hourOffset, to: currentDate)!
+            let entry = SimpleEntry(date: entryDate)
+            entries.append(entrv)
+        }
+
+        let timeline = Timeline (entries: entries, policy: .atEnd)
+        completion(timeline)
+    }
+}
+```
 
 #### Placeholder
 
@@ -46,7 +93,20 @@ When WidgetKit displays your widget for the first time, it renders the widget's 
 
 I’ll update my placeholder function to return sample Vote data for the widget.
 
-![Widget Preview](Assets/Provider.placeholder__.png)
+```swift
+struct Provider: TimelineProvider {
+    func placeholder(in context: Context) -> VoteEntry {
+        let vote = Vote(
+            congress: 118, 
+            chamber: "House",
+            ...
+            ...
+        )
+
+        return VoteEntry (date: Date(), vote: vote)
+    }
+}
+```
 
 #### Snapshot
 
@@ -54,7 +114,21 @@ Provides a timeline entry that represents the current time and state of a widget
 
 Most of the time when getSnapshot is being called will be in the widget gallery, so for this function, I return the same sample Vote.
 
-![Widget Preview](Assets/Provider.getSnapshot__.png)
+```swift
+struct Provider: TimelineProvider {
+    func getSnapshot(in context: Context, completion: @escaping (VoteEntry) -> ()) {
+        let vote = Vote(
+            congress: 118,
+            chamber: "House",
+            ...
+            ...
+        )
+        
+        let entry = VoteEntry (date: Date(), vote: vote)
+        completion(entry)
+    }
+}
+```
 
 
 #### Timeline
@@ -75,6 +149,42 @@ Let's break down this function:
 
 ![Widget Preview](Assets/Provider.getTimeline__.png)
 
+```swift
+struct Provider: TimelineProvider {
+    func getTimeline (in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        
+        Task {
+            var entries: [VoteEntry] = []
+
+            // 1
+            guard let votesList = try? await VoteswidgetService.shared.getHouseVotesAsync(), 
+                    votesList.count ›= 4 else {
+                return
+            }
+
+            // 2
+            let votes = votesList.prefix(4)
+
+            // 3
+            let currentDate = Date ()
+            for (index, vote) in votes.enumerated() {
+                let entryDate = Calendar.current.date (byAdding: •minute, value: 15 * index, to: currentDate)!
+                entries.append (VoteEntry (date: entryDate, vote: vote, isSubscriber:
+                subscriptionActive))
+            }
+
+            // 4
+            let nextUpdate = Calendar.current.date (byAdding: .hour, value: 1, to: currentDate)!
+
+            let timeline = Timeline(
+                entries: entries,
+                policy: •after(nextUpdate)
+            )
+            completion(timeline)
+        }
+    }
+}
+```
 
 #### Views
 
@@ -89,13 +199,76 @@ You can support multiple size classes by adding views for each size class and sw
 
 Here, we’re passing our Provider.Entry object into our different size class views. This object will be the VoteEntry object we built in getTimeline(in:completion:) earlier.
 
-![Widget Preview](Assets/VotesWidgetEntryView.png)
+
+```swift
+struct VotesWidgetEntryView : View {
+    @Environment(\.widgetFamily) var family
+    var entry: Provider.Entry
+
+    var body: some View {
+
+        switch family {
+        case .systemSmall:
+            VotesWidgetViewSmall(entry: entry)
+        case .systemMedium:
+            VotesWidgetViewMedium(entry: entry)
+        case .systemLarge:        
+            VotesWidgetViewLarge(entry: entry)
+        case .systemExtralarge:
+            VotesWidgetViewLarge(entry: entry)
+        default:
+            VotesWidgetViewLarge(entry: entry)
+        }
+    }
+}
+
+```
 
 #### VotesWidgetViewMedium
 
 I’ll share the VotesWidgetViewMedium view as an example.
 
-![Widget Preview](Assets/VotesWidgetViewMedium.png)
+```swift
+struct VotesWidgetViewMedium: View {
+    @Environment(\.colorScheme) var colorScheme
+    var entry: Provider.Entry
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            
+            HStack(alignment: .top) {
+                let name = entry.vote.question?.contains("Cloture") ?? false ? "Cloture" : "Nomination"
+                Text(entry.vote.bill?.number?.uppercased() ?? name)
+                    .font(.title3)
+                    .bold()
+                Spacer()
+                TallyComponent(entry.vote)
+            }
+            
+            Text(entry.vote.bill?.title ?? "No Title")
+                .font(.caption)
+                .multilineTextAlignment(.leading)
+            
+            HStack(alignment: .bottom) {
+                Text(entry.vote.question ?? "")
+                    .font(.caption)
+                    .foregroundColor(colorScheme == .dark ? .white : .gray)
+                    .fontWeight(.bold)
+                    .padding(EdgeInsets(top: 5, leading: 0, bottom: 0, trailing: 0))
+                Spacer()
+                VStack(alignment: .trailing) {
+                    Text(entry.vote.date?.longDate() ?? "")
+                        .font(.caption)
+                        .foregroundColor(colorScheme == .dark ? .white : .gray)
+                        .fontWeight(.bold)
+                        .padding(EdgeInsets(top: 5, leading: 0, bottom: 0, trailing: 0))
+                }
+            }
+        }
+        .padding(5)
+    }
+}
+```
 
 In this example, you can see we’re accessing the data in our Vote object via the entry value that we passed into the view.
 
