@@ -18,15 +18,25 @@ Choose a name that fits your widget. I’m naming this one VotesWidget.
 
 You’ll get two files - VotesWidgetBundle and VotesWidget. The first is pretty simple…
 
+![Widget Preview](Assets/IMG_1712.png)
+
 However, the VotesWidget file has quite a lot of boilerplate in it. Let’s break it down by struct.
+
+![Widget Preview](Assets/SimpleEntry.png)
+
 
 We’ll start with the SimpleEntry struct. This type is going to be the main data type for your widget. It will hold a date and whatever other data you need to show on your widget. For more information, checkout Apple’s documentation on TimelineEntry.
 
 I’m going to update mine with my Vote data type that holds information on congressional votes.
 
+![Widget Preview](Assets/VoteEntry.png)
+
+
 #### Timeline Provider
 
 Next, let’s take a look a look at the Provider struct; there’s a lot there.
+
+![Widget Preview](Assets/Provider.png)
 
 #### Placeholder
 
@@ -36,11 +46,16 @@ When WidgetKit displays your widget for the first time, it renders the widget's 
 
 I’ll update my placeholder function to return sample Vote data for the widget.
 
+![Widget Preview](Assets/Provider.placeholder__.png)
+
 #### Snapshot
 
 Provides a timeline entry that represents the current time and state of a widget. WidgetKit calls getSnapshot(in:completion:) when the widget appears in transient situations. If context.isPreview is true, the widget appears in the widget gallery.
 
 Most of the time when getSnapshot is being called will be in the widget gallery, so for this function, I return the same sample Vote.
+
+![Widget Preview](Assets/Provider.getSnapshot__.png)
+
 
 #### Timeline
 
@@ -48,15 +63,18 @@ The getTimeline(in:completion:) function tells the system when and what to refre
 
 Let's break down this function:
 
-First, we're grabbing a list of votes from our VotesWidgetService and we're making sure we've got at least 4 votes in the list.
+- First, we're grabbing a list of votes from our VotesWidgetService and we're making sure we've got at least 4 votes in the list.
 
-It's very rare not to have enough, but we don't want any runtime errors when we pick the top 4.
+    - It's very rare not to have enough, but we don't want any runtime errors when we pick the top 4.
 
-Grab the first 4 votes. Since we’re only showing 4 before our nextUpdate, there’s no need to make VoteEntry objects for a large list of votes.
+- Grab the first 4 votes. Since we’re only showing 4 before our nextUpdate, there’s no need to make VoteEntry objects for a large list of votes.
 
-Next up, we're creating 4 VoteEntry objects, each with a date value 15, 30, 45, and 60 minutes in the future.
+- Next up, we're creating 4 VoteEntry objects, each with a date value 15, 30, 45, and 60 minutes in the future.
 
-Finally, we're setting up our widget to update itself again in an hour.
+- Finally, we're setting up our widget to update itself again in an hour.
+
+![Widget Preview](Assets/Provider.getTimeline__.png)
+
 
 #### Views
 
@@ -71,13 +89,20 @@ You can support multiple size classes by adding views for each size class and sw
 
 Here, we’re passing our Provider.Entry object into our different size class views. This object will be the VoteEntry object we built in getTimeline(in:completion:) earlier.
 
+![Widget Preview](Assets/VotesWidgetEntryView.png)
+
 #### VotesWidgetViewMedium
 
 I’ll share the VotesWidgetViewMedium view as an example.
 
+![Widget Preview](Assets/VotesWidgetViewMedium.png)
+
 In this example, you can see we’re accessing the data in our Vote object via the entry value that we passed into the view.
 
 This is what the medium size widget looks like populated with some data.
+
+
+![Widget Preview](Assets/Screen_Shot_2024-01-11_at_9.42.15_PM.png)
 
 And that’s it! Add some other views for your other size classes and use the canvas preview in Xcode to preview them in different sizes.
 
