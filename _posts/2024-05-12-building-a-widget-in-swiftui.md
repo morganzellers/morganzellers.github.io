@@ -147,7 +147,6 @@ Let's break down this function:
 
 - Finally, we're setting up our widget to update itself again in an hour.
 
-![Widget Preview](Assets/Provider.getTimeline__.png)
 
 ```swift
 struct Provider: TimelineProvider {
@@ -274,8 +273,6 @@ In this example, you can see we’re accessing the data in our Vote object via t
 
 This is what the medium size widget looks like populated with some data.
 
-
-![Widget Preview](Assets/Screen_Shot_2024-01-11_at_9.42.15_PM.png)
 
 And that’s it! Add some other views for your other size classes and use the canvas preview in Xcode to preview them in different sizes.
 
