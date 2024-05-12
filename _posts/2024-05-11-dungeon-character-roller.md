@@ -17,6 +17,12 @@ I saw this app having two features:
 
 These two features break down into just three screens…
 
+![A main screen with a title, three buttons, and a spot for text](../assets/EB2C756D-01FD-4B5B-8800-9AD28DF1DDCC_2.PNG)
+
+![A screen to list all saved characters](../assets/CD771A4E-97EB-4209-9C0A-0C98A5CBAB19_2.PNG)
+
+
+![A detail screen for characters](../assets/64200933-9B01-463D-94C4-7DA2A54BEE90_2.PNG)
 
 While we’re at it, this is what our character model looks like:
 
